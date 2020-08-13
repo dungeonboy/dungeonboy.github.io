@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>第一次部署个人博客！ &middot; dungeonboy的个人博客</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dungeonboy.github.io/"><h1>dungeonboy的个人博客</h1></a>
+      <p class="lead">
+      An elegant open source and mobile first theme for <a href="http://hugo.spf13.com">hugo</a> made by <a href="http://twitter.com/mdo">@mdo</a>. Originally made for Jekyll.
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://dungeonboy.github.io/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>第一次部署个人博客！</h1>
+  <time datetime=2020-08-13T16:41:20&#43;0800 class="post-date">Thu, Aug 13, 2020</time>
+  <h2 id="费时三个小时搭建个人博客完成"><strong>费时三个小时，搭建个人博客完成</strong></h2>
+<h1 id="1安装hugo">1.安装hugo</h1>
+<h2 id="解压缩后将可执行文件hugo复制到usrlocalbin目录下">我使用的linux系统是<strong>CentOS 6.10</strong><br>
+去hugo官网release下载对应版本的安装包，比如<strong>hugo_0.74.3_Linux-64bit.tar.gz</strong><br>
+解压缩后，将可执行文件hugo复制到<strong>usr/local/bin</strong>目录下</h2>
+<h1 id="2用hugo生成博客站点">2.用hugo生成博客站点</h1>
+<h2 id="修改title添加文本内容等"><em><strong>hugo new site myblog</strong></em><br>
+便在当前目录下生成了一个文件夹，名为myblog<br>
+进入该文件夹，里面有content、themes等自动生成的文件夹。<br>
+content用来存博客，themes用来存下载的主题。<br>
+新建博客文章命令：<br>
+<em><strong>hugo new post/first.md</strong></em><br>
+则会自动在**myblog/content/post/**下自动生成名为first.md的文件<br>
+可以自己用vim或是gedit编辑md文件<br>
+修改title，添加文本内容等</h2>
+<h1 id="3下载主题">3.下载主题</h1>
+<h2 id="等待下载完成即可">去hugo官网查找主题<br>
+一般主题页面都会有安装说明<br>
+比如hyde主题的下载：<br>
+首先，进入<strong>myblog/themes</strong>目录下<br>
+然后执行 git clone <a href="https://github.com/spf13/hyde.git">https://github.com/spf13/hyde.git</a><br>
+等待下载完成即可</h2>
+<h1 id="4本地部署个人博客">4.本地部署个人博客</h1>
+<h2 id="通过httplocalhost1313-或-http127001-访问"><em><strong>hugo server &ndash;theme=hyde &ndash;buildDrafts</strong></em><br>
+部署时指定theme=hyde<br>
+将博客部署到本地<br>
+通过<strong>http://localhost:1313</strong> 或 <strong>http://127.0.0.1</strong> 访问</h2>
+<h1 id="5将个人博客部署到github">5.将个人博客部署到github</h1>
+<p>去github网站新建一个repository，命名为username.github.io<br>
+比如dungeonboy.github.io<br>
+配置linux下git的昵称和邮箱：<br>
+<em><strong>git config &ndash;global user.name &ldquo;username&rdquo;</strong></em><br>
+<em><strong>git config &ndash;global user.email &ldquo;<a href="mailto:abc@def.com">abc@def.com</a>&rdquo;</strong></em><br>
+完成配置后，在myblog目录下执行:
+<strong>hugo &ndash;theme=hyde &ndash;baseUrl=&quot;https://dungeonboy.github.io/&rdquo; &ndash;buildDrafts</strong><br>
+会在myblog目录下生成一个public文件夹<br>
+接下来将public文件夹上传到github仓库中<br>
+进入public文件夹<br>
+执行以下命令：</p>
+<ul>
+<li>git init</li>
+<li>git add .</li>
+<li>git commit -m &ldquo;first commit&rdquo;</li>
+<li>git remote add origin <a href="https://github.com/dungeonboy/dungeonboy.github.io.git">https://github.com/dungeonboy/dungeonboy.github.io.git</a></li>
+<li>git push -u origin master<br>
+push命令执行完后要输入github密码，输入正确后，则会开始提交<br>
+提交成功后，在github网页中进入这个repository<br>
+发现public文件夹中的内容已经被提交到该repository中<br>
+此时部署已经完成<br>
+可以通过username.github.io访问个人博客</li>
+</ul>
+
+</div>
+
+
+    </main>
+
+    
+      
+    
+  </body>
+</html>

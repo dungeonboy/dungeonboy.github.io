@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on My New Hugo Site</title>
+    <title>Posts on dungeonboy的个人博客</title>
     <link>https://dungeonboy.github.io/post/</link>
-    <description>Recent content in Posts on My New Hugo Site</description>
+    <description>Recent content in Posts on dungeonboy的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 13 Aug 2020 17:19:06 +0800</lastBuildDate>
@@ -27,6 +27,43 @@
       
       <guid>https://dungeonboy.github.io/post/first/</guid>
       <description>我的第一个markdown格式的blog，2020/8/13</description>
+    </item>
+    
+    <item>
+      <title>第一次部署个人博客！</title>
+      <link>https://dungeonboy.github.io/post/about/</link>
+      <pubDate>Thu, 13 Aug 2020 16:41:20 +0800</pubDate>
+      
+      <guid>https://dungeonboy.github.io/post/about/</guid>
+      <description>费时三个小时，搭建个人博客完成 1.安装hugo 我使用的linux系统是CentOS 6.10
+去hugo官网release下载对应版本的安装包，比如hugo_0.74.3_Linux-64bit.tar.gz
+解压缩后，将可执行文件hugo复制到usr/local/bin目录下 2.用hugo生成博客站点 hugo new site myblog
+便在当前目录下生成了一个文件夹，名为myblog
+进入该文件夹，里面有content、themes等自动生成的文件夹。
+content用来存博客，themes用来存下载的主题。
+新建博客文章命令：
+hugo new post/first.md
+则会自动在**myblog/content/post/**下自动生成名为first.md的文件
+可以自己用vim或是gedit编辑md文件
+修改title，添加文本内容等 3.下载主题 去hugo官网查找主题
+一般主题页面都会有安装说明
+比如hyde主题的下载：
+首先，进入myblog/themes目录下
+然后执行 git clone https://github.com/spf13/hyde.git
+等待下载完成即可 4.本地部署个人博客 hugo server &amp;ndash;theme=hyde &amp;ndash;buildDrafts
+部署时指定theme=hyde
+将博客部署到本地
+通过http://localhost:1313 或 http://127.0.0.1 访问 5.将个人博客部署到github 去github网站新建一个repository，命名为username.github.io
+比如dungeonboy.github.io
+配置linux下git的昵称和邮箱：
+git config &amp;ndash;global user.name &amp;ldquo;username&amp;rdquo;
+git config &amp;ndash;global user.email &amp;ldquo;abc@def.com&amp;rdquo;
+完成配置后，在myblog目录下执行: hugo &amp;ndash;theme=hyde &amp;ndash;baseUrl=&amp;quot;https://dungeonboy.github.io/&amp;rdquo; &amp;ndash;buildDrafts
+会在myblog目录下生成一个public文件夹
+接下来将public文件夹上传到github仓库中
+进入public文件夹
+执行以下命令：
+ git init git add .</description>
     </item>
     
   </channel>
