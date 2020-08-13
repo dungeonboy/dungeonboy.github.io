@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>About &middot; My New Hugo Site</title>
+  <title>第一次部署个人博客！ &middot; My New Hugo Site</title>
   <meta name="description" content="" />
 
   
@@ -50,9 +50,57 @@
 
     <main class="content container">
     <div class="post">
-  <h1>About</h1>
+  <h1>第一次部署个人博客！</h1>
   <time datetime=2020-08-13T16:41:20&#43;0800 class="post-date">Thu, Aug 13, 2020</time>
-  <p>两个多小时，搞一个免费的个人博客</p>
+  <h2 id="费时三个小时搭建个人博客完成"><strong>费时三个小时，搭建个人博客完成。</strong></h2>
+<h1 id="1安装hugo">1.安装hugo</h1>
+<h2 id="解压缩后将可执行文件hugo复制到usrlocalbin目录下">我使用的linux系统是<strong>CentOS 6.10</strong>
+去hugo官网release下载对应版本的安装包，比如<strong>hugo_0.74.3_Linux-64bit.tar.gz</strong>
+解压缩后，将可执行文件hugo复制到<strong>usr/local/bin</strong>目录下</h2>
+<h1 id="2用hugo生成博客站点">2.用hugo生成博客站点</h1>
+<h2 id="修改title添加文本内容等"><em><strong>hugo new site myblog</strong></em>
+便在当前目录下生成了一个文件夹，名为myblog
+进入该文件夹，里面有content、themes等自动生成的文件夹。
+content用来存博客，themes用来存下载的主题。
+新建博客文章命令：
+<em><strong>hugo new post/first.md</strong></em>
+则会自动在**myblog/content/post/**下自动生成名为first.md的文件
+可以自己用vim或是gedit编辑md文件
+修改title，添加文本内容等</h2>
+<h1 id="3下载主题">3.下载主题</h1>
+<h2 id="等待下载完成即可">去hugo官网查找主题
+一般主题页面都会有安装说明
+比如hyde主题的下载：
+首先，进入<strong>myblog/themes</strong>目录下
+然后执行 git clone <a href="https://github.com/spf13/hyde.git">https://github.com/spf13/hyde.git</a>
+等待下载完成即可</h2>
+<h1 id="4本地部署个人博客">4.本地部署个人博客</h1>
+<h2 id="通过httplocalhost1313-或-http127001-访问"><em><strong>hugo server &ndash;theme=hyde &ndash;buildDrafts</strong></em>
+部署时指定theme=hyde
+将博客部署到本地
+通过<strong>http://localhost:1313</strong> 或 <strong>http://127.0.0.1</strong> 访问</h2>
+<h1 id="5将个人博客部署到github">5.将个人博客部署到github</h1>
+<p>去github网站新建一个repository，命名为username.github.io
+比如dungeonboy.github.io
+配置linux下git的昵称和邮箱：
+<em><strong>git config &ndash;global user.name &ldquo;username&rdquo;</strong></em>
+<em><strong>git config &ndash;global user.email &ldquo;<a href="mailto:abc@def.com">abc@def.com</a>&rdquo;</strong></em>
+完成配置后，在myblog目录下执行:
+<strong>hugo &ndash;theme=hyde &ndash;baseUrl=&quot;https://dungeonboy.github.io/&rdquo; &ndash;buildDrafts</strong>
+会在myblog目录下生成一个public文件夹
+接下来将public文件夹上传到github仓库中
+进入public文件夹
+执行以下命令：
+<strong>git init
+git add .
+git commit -m &ldquo;first commit&rdquo;
+git remote add origin <a href="https://github.com/dungeonboy/dungeonboy.github.io.git">https://github.com/dungeonboy/dungeonboy.github.io.git</a>
+git push -u origin master</strong>
+push命令执行完后要输入github密码，输入正确后，则会开始提交
+提交成功后，在github网页中进入这个repository
+发现public文件夹中的内容已经被提交到该repository中
+此时部署已经完成
+可以通过username.github.io访问个人博客</p>
 
 </div>
 
