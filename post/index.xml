@@ -6,10 +6,31 @@
     <description>Recent content in Posts on lbwnb的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 13 Aug 2020 17:19:06 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 21 Aug 2020 17:32:42 +0800</lastBuildDate>
     
 	<atom:link href="https://dungeonboy.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>萌新的vscode初体验</title>
+      <link>https://dungeonboy.github.io/post/vscodeuse/</link>
+      <pubDate>Fri, 21 Aug 2020 17:32:42 +0800</pubDate>
+      
+      <guid>https://dungeonboy.github.io/post/vscodeuse/</guid>
+      <description>@TOC
+vscode配置c++环境 下载安装vscode稳定版
+在扩展里安装chinese和c++intellisense
+我使用的c++编译环境是Qt带的mingw64
+将example\QT\Tools\mingw730_64\bin添加到环境变量path中
+就可以在vscode中愉快的使用c++了
+单文件编译 经典helloworld.cpp
+#include &amp;lt;iostream&amp;gt; int main() { std::cout&amp;lt;&amp;lt;&amp;quot;hello world!&amp;quot;&amp;lt;&amp;lt;std::endl; return 0; } 我还学了一手，自动整理格式Shift+Alt+F 整个文件的缩进啥的，看不爽就Shift+Alt+F VSCode默认的格式是Visual Studio 编写好cpp后直接按F5，然后选择C++(gdb)，然后选择g++.cpp 会自动在当前文件夹下自动生成.vscode文件夹，并且在里面自动生成launch.json文件 json文件写了个啥，我也看不懂。 在helloworld.cpp的编辑界面再按F5，就运行成功了 在json文件编辑界面按F5会报错，本萌新看不懂。
+多文件编译 hello.h:
+#ifndef HELLO_H_ #define HELLO_H_ void show(); #endif hello.cpp:
+#include &amp;lt;iostream&amp;gt; void show() { std::cout&amp;lt;&amp;lt;&amp;quot;hello world!&amp;quot;&amp;lt;&amp;lt;std::endl; } helloworld.cpp:
+#include &amp;quot;hello.h&amp;quot; int main() { show(); return 0; } 试了好久，多文件编译都搞不出来 我决定使用Makefile，虽然我是个makefile萌新 makefile:
+helloworld: helloworld.cpp hello.o g++ helloworld.cpp hello.o -o helloworld.exe hello.o: hello.cpp g++ -c hello.</description>
+    </item>
     
     <item>
       <title>歪嘴战神</title>

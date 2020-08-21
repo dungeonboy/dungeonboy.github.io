@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>萌新的vscode初体验 &middot; lbwnb的个人博客</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://dungeonboy.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://dungeonboy.github.io/"><h1>lbwnb的个人博客</h1></a>
+      <p class="lead">
+      An elegant open source and mobile first theme for <a href="http://hugo.spf13.com">hugo</a> made by <a href="http://twitter.com/mdo">@mdo</a>. Originally made for Jekyll.
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://dungeonboy.github.io/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>萌新的vscode初体验</h1>
+  <time datetime=2020-08-21T17:32:42&#43;0800 class="post-date">Fri, Aug 21, 2020</time>
+  <p>@<a href="%E8%90%8C%E6%96%B0%E7%9A%84vscode%E5%88%9D%E4%BD%93%E9%AA%8C">TOC</a></p>
+<h1 id="vscode配置c环境">vscode配置c++环境</h1>
+<p>下载安装vscode稳定版<br>
+在扩展里安装<strong>chinese</strong>和<strong>c++intellisense</strong><br>
+我使用的c++编译环境是<strong>Qt</strong>带的<strong>mingw64</strong><br>
+将<strong>example\QT\Tools\mingw730_64\bin</strong>添加到环境变量path中<br>
+就可以在vscode中愉快的使用c++了</p>
+<h1 id="单文件编译">单文件编译</h1>
+<p>经典helloworld.cpp</p>
+<pre><code>#include &lt;iostream&gt;
+int main()
+{
+    std::cout&lt;&lt;&quot;hello world!&quot;&lt;&lt;std::endl;
+    return 0;
+}
+</code></pre><p>我还学了一手，自动整理格式<strong>Shift+Alt+F</strong>
+整个文件的缩进啥的，看不爽就<strong>Shift+Alt+F</strong>
+<strong>VSCode</strong>默认的格式是<strong>Visual Studio</strong>
+编写好cpp后直接按F5，然后选择<strong>C++(gdb)</strong>，然后选择<strong>g++.cpp</strong>
+会自动在当前文件夹下自动生成.vscode文件夹，并且在里面自动生成<strong>launch.json</strong>文件
+<img src="https://img-blog.csdnimg.cn/20200821163547985.png#pic_center" alt="在这里插入图片描述">
+json文件写了个啥，我也看不懂。
+在<strong>helloworld.cpp</strong>的编辑界面再按F5，就运行成功了
+<img src="https://img-blog.csdnimg.cn/20200821163831433.png#pic_center" alt="在这里插入图片描述">
+在json文件编辑界面按F5会报错，本萌新看不懂。</p>
+<h1 id="多文件编译">多文件编译</h1>
+<p><strong>hello.h:</strong></p>
+<pre><code>#ifndef HELLO_H_
+#define HELLO_H_
+
+void show();
+
+#endif
+</code></pre><p><strong>hello.cpp:</strong></p>
+<pre><code>#include &lt;iostream&gt;
+void show()
+{
+    std::cout&lt;&lt;&quot;hello world!&quot;&lt;&lt;std::endl;
+}
+</code></pre><p><strong>helloworld.cpp:</strong></p>
+<pre><code>#include &quot;hello.h&quot;
+int main()
+{
+    show();
+    return 0;
+}
+</code></pre><p>试了好久，多文件编译都搞不出来
+我决定使用<strong>Makefile</strong>，虽然我是个<strong>makefile</strong>萌新
+<strong>makefile:</strong></p>
+<pre><code>helloworld: helloworld.cpp hello.o
+	g++ helloworld.cpp hello.o -o helloworld.exe
+hello.o: hello.cpp
+	g++ -c hello.cpp
+clean:
+	del *.o *.exe
+</code></pre><p>用<strong>rm</strong>老是报错，百度一波发现，windows下cmd没有<strong>rm</strong>命令，只有<strong>del</strong>
+在helloworld.cpp编辑界面选择终端-&gt;配置任务：
+<img src="https://img-blog.csdnimg.cn/20200821165725359.png?#pic_center" alt="在这里插入图片描述">
+会自动生成<strong>tasks.json</strong>文件
+此时文件结构为：
+<img src="https://img-blog.csdnimg.cn/20200821170015353.png#pic_center" alt="在这里插入图片描述">
+tasks.json里面，根据百度与我的摸索，这两句很重要：</p>
+<pre><code>&quot;command&quot;: &quot;E:\\SOFTWARE\\QT\\Tools\\mingw730_64\\bin\\g++.exe&quot;,
+&quot;args&quot;: [
+			&quot;-g&quot;,
+			&quot;${file}&quot;,
+			&quot;-o&quot;,
+			&quot;${fileDirname}\\${fileBasenameNoExtension}.exe&quot;],
+</code></pre><p><strong>command</strong>表示要用的命令，<strong>args</strong>表示命令后的参数
+最终效果应该是<strong>g++ -g helloworld.cpp -o helloworld.exe</strong>
+我们修改一下这两句代码：</p>
+<pre><code>&quot;command&quot;: &quot;E:\\SOFTWARE\\QT\\Tools\\mingw730_64\\bin\\mingw32-make.exe&quot;,
+&quot;args&quot;: [
+			&quot;-B&quot;,
+],
+</code></pre><p>这样，F5就会执行<strong>mingw32-make.exe -B</strong>
+在<strong>vscode</strong>终端下执行<strong>mingw32-make.exe -help</strong>可以查到
+<strong>-B, &ndash;always-make           Unconditionally make all targets.</strong>
+说明-B类似于在<strong>linux</strong>下直接执行<strong>make</strong>
+记得要在helloworld.cpp界面按F5，不然会将当前文件名.exe作为最终要打开的可执行文件，会报错：不存在这个exe文件。
+运行结果：
+<img src="https://img-blog.csdnimg.cn/20200821171617467.png?#pic_center" alt="在这里插入图片描述">
+我发现用这种方法没办法打断点调试程序，只能编译运行，看来还得多学习使用vscode的使用。</p>
+
+</div>
+
+
+    </main>
+
+    
+      
+    
+  </body>
+</html>

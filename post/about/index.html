@@ -108,6 +108,26 @@ content用来存博客，themes用来存下载的主题。<br>
 发现public文件夹中的内容已经被提交到该repository中<br>
 此时部署已经完成<br>
 可以通过username.github.io访问个人博客</p>
+<hr>
+<h1 id="6更新博客">6.更新博客</h1>
+<h5 id="更新本地博客">更新本地博客</h5>
+<p>在myblog目录下<br>
+新建文章：<strong>hugo new post/abc.md</strong><br>
+修改文章：<strong>vim content/post/abc.md</strong><br>
+也可用gedit修改，更加方便<br>
+更新完后，将博客内容同步到本地public仓库<br>
+<strong>hugo &ndash;theme=hyde &ndash;baseUrl=&quot;https://dungeonboy.github.io/&rdquo; &ndash;buildDrafts</strong></p>
+<h5 id="更新远端仓库">更新远端仓库</h5>
+<p>进入public目录下<br>
+执行以下命令：</p>
+<ul>
+<li>git init</li>
+<li>git add .</li>
+<li>git commit -m &ldquo;example name&rdquo;</li>
+<li>git remote add origin <a href="https://github.com/dungeonboy/dungeonboy.github.io.git">https://github.com/dungeonboy/dungeonboy.github.io.git</a></li>
+<li>git push -u origin master</li>
+</ul>
+<p>push成功后，github仓库就更新完成啦！</p>
 
 </div>
 
