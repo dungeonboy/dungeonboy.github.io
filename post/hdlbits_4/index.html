@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Verilog language.Procedures &#43; More Verilog Features'>
+<title>HDLBits笔记4</title>
+
+<link rel='canonical' href='https://dungeonboy.github.io/post/hdlbits_4/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='HDLBits笔记4'>
+<meta property='og:description' content='Verilog language.Procedures &#43; More Verilog Features'>
+<meta property='og:url' content='https://dungeonboy.github.io/post/hdlbits_4/'>
+<meta property='og:site_name' content='dungeonboy&#39;s blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='verilog' /><meta property='article:published_time' content='2023-05-27T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2023-05-27T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="HDLBits笔记4">
+<meta name="twitter:description" content="Verilog language.Procedures &#43; More Verilog Features">
+    <link rel="shortcut icon" href="/favicon_32.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hudc7465bb6ea5a0f7f1513cf1f9ee6138_15527_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">dungeonboy&#39;s blog</a></h1>
+            <h2 class="site-description">个人学习网站</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/dungeonboy/'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#procedures">Procedures</a>
+      <ol>
+        <li><a href="#always-blockscombinational">Always blocks(combinational)</a></li>
+        <li><a href="#always-blocksclocked">Always blocks(clocked)</a></li>
+        <li><a href="#always-if">Always if</a></li>
+        <li><a href="#if-statement-latches">If statement latches</a></li>
+        <li><a href="#case-statement">Case statement</a></li>
+        <li><a href="#priority-encoder">Priority encoder</a></li>
+        <li><a href="#priority-encoder-with-casez">Priority encoder with casez</a></li>
+        <li><a href="#avoiding-latches">Avoiding latches</a></li>
+      </ol>
+    </li>
+    <li><a href="#more-verilog-features">More Verilog Features</a>
+      <ol>
+        <li><a href="#conditional-ternary-operator">conditional ternary operator</a></li>
+        <li><a href="#reduction-operator">Reduction operator</a></li>
+        <li><a href="#reduction-even-wider-gates">Reduction: Even wider gates</a></li>
+        <li><a href="#combinational-for-loop-vector-reversal-2">Combinational for-loop: Vector reversal 2</a></li>
+        <li><a href="#combinational-for-loop-255-bit-population-count">Combinational for-loop: 255-bit population count</a></li>
+        <li><a href="#generate-for-loop-100bit-binary-adder">Generate for-loop: 100bit binary adder</a></li>
+        <li><a href="#generate-for-loop-100-digit-bcd-adder">Generate for-loop: 100-digit BCD adder</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/hdlbits/" >
+                HDLBits
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/hdlbits_4/">HDLBits笔记4</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Verilog language.Procedures &#43; More Verilog Features
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2023-05-27</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 4 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="procedures">Procedures</h2>
+<h3 id="always-blockscombinational">Always blocks(combinational)</h3>
+<p>建立一个与门，用<code>assign</code>语句和<code>always</code>语句</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">a</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">b</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">wire</span> <span class="n">out_assign</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">out_alwaysblock</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">out_assign</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="n">out_alwaysblock</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="always-blocksclocked">Always blocks(clocked)</h3>
+<p>建立一个异或门，使用<code>assign</code>语句、组合<code>always</code>语句和时序<code>always</code>语句</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">clk</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">a</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">b</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">wire</span> <span class="n">out_assign</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">out_always_comb</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">out_always_ff</span>   <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">out_assign</span> <span class="o">=</span> <span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">       	<span class="n">out_always_comb</span> <span class="o">=</span> <span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="n">out_always_ff</span> <span class="o">&lt;=</span> <span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="n">endmodul</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="always-if">Always if</h3>
+<p><code>if</code>语句通常用于创建2选1选择器，等同于三目运算符：<code>assign out = (condition) ? x : y;</code></p>
+<p>建立一个2选1选择器，如果<code>sel_b1</code>和<code>sel_b2</code>为真，选择b，其他情况选择a，使用<code>assign</code>和<code>always</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">a</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">b</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">sel_b1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">sel_b2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">wire</span> <span class="n">out_assign</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">out_always</span>   <span class="p">);</span> 
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">out_assign</span> <span class="o">=</span> <span class="p">(</span><span class="n">sel_b1</span> <span class="o">&amp;</span> <span class="n">sel_b2</span><span class="p">)</span> <span class="o">?</span> <span class="n">b</span> <span class="o">:</span> <span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="n">sel_b1</span> <span class="o">&amp;</span> <span class="n">sel_b2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out_always</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out_always</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="if-statement-latches">If statement latches</h3>
+<p>如下代码产生了锁存器，修复代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">cpu_overheated</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">shut_off_computer</span> <span class="o">=</span> <span class="mh">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">~</span><span class="n">arrived</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="n">keep_driving</span> <span class="o">=</span> <span class="o">~</span><span class="n">gas_tank_empty</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>      <span class="n">cpu_overheated</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">shut_off_computer</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>      <span class="n">arrived</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>      <span class="n">gas_tank_empty</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">keep_driving</span>  <span class="p">);</span> <span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">cpu_overheated</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">shut_off_computer</span> <span class="o">=</span> <span class="mh">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">            <span class="n">shut_off_computer</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">~</span><span class="n">arrived</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">keep_driving</span> <span class="o">=</span> <span class="o">~</span><span class="n">gas_tank_empty</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">            <span class="n">keep_driving</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="case-statement">Case statement</h3>
+<p>用<code>case</code>语句创建一个6选1多路选择器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">sel</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">data0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">data1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">data2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">data3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">data4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">data5</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">out</span>   <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">always</span><span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">3</span><span class="mb">&#39;b000</span><span class="o">:</span>  <span class="n">out</span> <span class="o">=</span> <span class="n">data0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">3</span><span class="mb">&#39;b001</span><span class="o">:</span>  <span class="n">out</span> <span class="o">=</span> <span class="n">data1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">3</span><span class="mb">&#39;b010</span><span class="o">:</span>  <span class="n">out</span> <span class="o">=</span> <span class="n">data2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">3</span><span class="mb">&#39;b011</span><span class="o">:</span>  <span class="n">out</span> <span class="o">=</span> <span class="n">data3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">3</span><span class="mb">&#39;b100</span><span class="o">:</span>  <span class="n">out</span> <span class="o">=</span> <span class="n">data4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">3</span><span class="mb">&#39;b101</span><span class="o">:</span>  <span class="n">out</span> <span class="o">=</span> <span class="n">data5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">default</span><span class="o">:</span> <span class="n">out</span> <span class="o">=</span> <span class="mh">4&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="priority-encoder">Priority encoder</h3>
+<p>优先编码器输出一个向量中第一个1的位置，建立一个4bit优先编码器，如果输入中没有1，则输出0，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">in</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="p">[</span><span class="mh">1</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">pos</span>  <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span><span class="p">(</span><span class="n">in</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h0</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h1</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h2</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h3</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h4</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h5</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h6</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h7</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h8</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;h9</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;ha</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;hb</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;hc</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;hd</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;he</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">4&#39;hf</span>   <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">default</span><span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">2&#39;h0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="priority-encoder-with-casez">Priority encoder with casez</h3>
+<p>建立一个8bit优先编码器，从低位开始，输出第一个1的位置，如果输入全0，则输出0，使用<code>casez</code>语句</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">in</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">pos</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">casez</span><span class="p">(</span><span class="n">in</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="p">&#39;</span><span class="nl">bzzzzzzz1:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="p">&#39;</span><span class="nl">bzzzzzz10:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="p">&#39;</span><span class="nl">bzzzzz100:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="p">&#39;</span><span class="nl">bzzzz1000:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="p">&#39;</span><span class="nl">bzzz10000:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="p">&#39;</span><span class="nl">bzz100000:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="p">&#39;</span><span class="nl">bz1000000:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">8</span><span class="mb">&#39;b10000000</span><span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">default</span>    <span class="o">:</span> <span class="n">pos</span> <span class="o">=</span> <span class="mh">3</span><span class="mi">&#39;d0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="avoiding-latches">Avoiding latches</h3>
+<p>假设你在建立一个电路处理PS/2键盘的信号，给定2字节信号，你需要判断被按下的按键是哪个</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th>Scancode[15:0]</th>
+<th>Arrow key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16&rsquo;he06b</td>
+<td>left arrow</td>
+</tr>
+<tr>
+<td>16&rsquo;he072</td>
+<td>down arrow</td>
+</tr>
+<tr>
+<td>16&rsquo;he074</td>
+<td>right arrow</td>
+</tr>
+<tr>
+<td>16&rsquo;he075</td>
+<td>up arrow</td>
+</tr>
+<tr>
+<td>Anything else</td>
+<td>none</td>
+</tr>
+</tbody>
+</table></div>
+<p>你的电路有1个16bit输入，和4个输出，避免产生锁存器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="c1">// synthesis verilog_input_version verilog_2001
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">scancode</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">left</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">down</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">right</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="n">up</span>  <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 方法一：case
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">       	<span class="n">left</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">down</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">right</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">up</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span><span class="p">(</span><span class="n">scancode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">16&#39;he06b</span><span class="o">:</span> <span class="n">left</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">16&#39;he072</span><span class="o">:</span> <span class="n">down</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">16&#39;he074</span><span class="o">:</span> <span class="n">right</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="mh">16&#39;he075</span><span class="o">:</span> <span class="n">up</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 方法二：assign
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// assign left  = scancode == 16&#39;he06b;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// assign down  = scancode == 16&#39;he072;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// assign right = scancode == 16&#39;he074;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// assign up    = scancode == 16&#39;he075;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="more-verilog-features">More Verilog Features</h2>
+<h3 id="conditional-ternary-operator">conditional ternary operator</h3>
+<p>输入4个无符号数，输出最小值，使用条件三元运算符</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">min</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">wire</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">min_of_ab</span> <span class="o">=</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span> <span class="o">?</span> <span class="n">a</span> <span class="o">:</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">wire</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">min_of_cd</span> <span class="o">=</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">d</span> <span class="o">?</span> <span class="n">c</span> <span class="o">:</span> <span class="n">d</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">min</span> <span class="o">=</span> <span class="n">min_of_ab</span> <span class="o">&lt;</span> <span class="n">min_of_cd</span> <span class="o">?</span> <span class="n">min_of_ab</span> <span class="o">:</span> <span class="n">min_of_cd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="reduction-operator">Reduction operator</h3>
+<p>奇偶校验常用于传输数据时检测错误，建立一个电路输出8bit数据的奇偶校验位，使用偶校验</p>
+<blockquote>
+<p>奇校验：若8bit数据中1的个数为偶数，则校验位为1，添加校验位后的9bit数据中1的个数为奇数</p>
+<p>偶校验：若8bit数据中1的个数为奇数，则校验位为1，添加校验位后的9bit数据中1的个数为偶数</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">in</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="n">parity</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">parity</span> <span class="o">=</span> <span class="o">^</span> <span class="n">in</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="reduction-even-wider-gates">Reduction: Even wider gates</h3>
+<p>建立一个电路，有100bit输入，输出其与、或、异或</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span><span class="p">(</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">99</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">in</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="n">out_and</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="n">out_or</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="n">out_xor</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">out_and</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">out_or</span> <span class="o">=</span> <span class="o">|</span><span class="n">in</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">out_xor</span> <span class="o">=</span> <span class="o">^</span><span class="n">in</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="combinational-for-loop-vector-reversal-2">Combinational for-loop: Vector reversal 2</h3>
+<p>输入100bit信号，反转其bit顺序输出</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span><span class="p">(</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">99</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">in</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="p">[</span><span class="mh">99</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">out</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">generate</span>
+</span></span><span class="line"><span class="cl">        <span class="k">genvar</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mh">100</span><span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mh">1</span><span class="p">)</span> <span class="k">begin</span><span class="o">:</span><span class="n">reversal</span>
+</span></span><span class="line"><span class="cl">            <span class="k">assign</span> <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">in</span><span class="p">[</span><span class="mh">99</span><span class="o">-</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">endgenerate</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="combinational-for-loop-255-bit-population-count">Combinational for-loop: 255-bit population count</h3>
+<p>人口计数器，计算一个向量中1的个数，建立一个255位宽的人口计数器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">254</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">in</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">out</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="n">out</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mh">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mh">255</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">+</span> <span class="n">in</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="generate-for-loop-100bit-binary-adder">Generate for-loop: 100bit binary adder</h3>
+<p>实例化100个全加器实现一个100bit的行波进位加法器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span><span class="p">(</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">99</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">cin</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="p">[</span><span class="mh">99</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">cout</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="p">[</span><span class="mh">99</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">sum</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 方法一：genearte-for
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">generate</span>
+</span></span><span class="line"><span class="cl">        <span class="k">genvar</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mh">100</span><span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mh">1</span><span class="p">)</span> <span class="k">begin</span><span class="o">:</span><span class="n">gen</span>
+</span></span><span class="line"><span class="cl">            <span class="n">fadd</span> <span class="n">ins</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mh">0</span><span class="p">)</span> <span class="o">?</span> <span class="n">cin</span> <span class="o">:</span> <span class="n">cout</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mh">1</span><span class="p">],</span> <span class="n">cout</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sum</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">endgenerate</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 方法二：实例化数组
+</span></span></span><span class="line"><span class="cl"><span class="cm">    fadd ins[99:0](a, b, {cout[98:0], cin}, cout, sum);
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span><span class="line"><span class="cl"><span class="k">module</span> <span class="n">fadd</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">cin</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="n">cout</span><span class="p">,</span> <span class="n">sum</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">a</span> <span class="o">^</span> <span class="n">b</span> <span class="o">^</span> <span class="n">cin</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">cout</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="n">cin</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">cin</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="generate-for-loop-100-digit-bcd-adder">Generate for-loop: 100-digit BCD adder</h3>
+<p>提供<code>bcd_add</code>模块:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">bcd_fadd</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">a</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">b</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>     <span class="n">cin</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span>   <span class="n">cout</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">sum</span> <span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>实例化100个该模块，实现100位数BCD行波进位加法器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">top_module</span><span class="p">(</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="p">[</span><span class="mh">399</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span> <span class="n">cin</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="n">cout</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="p">[</span><span class="mh">399</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">sum</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 方法一：generate-for
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">wire</span> <span class="p">[</span><span class="mh">99</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">cout_vec</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">generate</span>
+</span></span><span class="line"><span class="cl">        <span class="k">genvar</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mh">100</span><span class="p">;</span> <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mh">1</span><span class="p">)</span> <span class="k">begin</span><span class="o">:</span><span class="n">gen</span>
+</span></span><span class="line"><span class="cl">            <span class="n">bcd_fadd</span> <span class="n">ins</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mh">4</span><span class="o">+</span><span class="mh">3</span> <span class="o">-:</span> <span class="mh">4</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mh">4</span><span class="o">+</span><span class="mh">3</span> <span class="o">-:</span> <span class="mh">4</span><span class="p">],</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mh">0</span><span class="p">)</span> <span class="o">?</span> <span class="n">cin</span> <span class="o">:</span> <span class="n">cout_vec</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mh">1</span><span class="p">],</span> <span class="n">cout_vec</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sum</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mh">4</span><span class="o">+</span><span class="mh">3</span> <span class="o">-:</span> <span class="mh">4</span><span class="p">]);</span> 
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">endgenerate</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assign</span> <span class="n">cout</span> <span class="o">=</span> <span class="n">cout_vec</span><span class="p">[</span><span class="mh">99</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">	// 方法二：实例化数组
+</span></span></span><span class="line"><span class="cl"><span class="cm">    wire [99:0] cout_vec;
+</span></span></span><span class="line"><span class="cl"><span class="cm">    bcd_fadd ins[99:0](a, b, {cout_vec[98:0], cin}, cout_vec, sum);
+</span></span></span><span class="line"><span class="cl"><span class="cm">    assign cout = cout_vec[99];
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/verilog/">verilog</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/hdlbits_9/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HDLBits笔记9</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/hdlbits_8/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HDLBits笔记8</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/hdlbits_7/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HDLBits笔记7</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/hdlbits_6/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HDLBits笔记6</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/hdlbits_5/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">HDLBits笔记5</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2021 - 
+        
+        2023 dungeonboy&#39;s blog
+    </section>
+    
+    <section class="powerby">
+        
+            个人学习网站 <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Categories on dungeonboy&#39;s blog</title>
+        <link>https://dungeonboy.github.io/categories/</link>
+        <description>Recent content in Categories on dungeonboy&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Thu, 15 Jun 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://dungeonboy.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>FPGA</title>
+        <link>https://dungeonboy.github.io/categories/fpga/</link>
+        <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://dungeonboy.github.io/categories/fpga/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>HDLBits</title>
+        <link>https://dungeonboy.github.io/categories/hdlbits/</link>
+        <pubDate>Thu, 15 Jun 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://dungeonboy.github.io/categories/hdlbits/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>计算机组成原理</title>
+        <link>https://dungeonboy.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/</link>
+        <pubDate>Thu, 25 May 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://dungeonboy.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>

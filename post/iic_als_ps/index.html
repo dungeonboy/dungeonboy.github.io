@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='FPGA实现IIC驱动环境光、距离传感器，按键切换显示环境光、距离数据，数据通过数码管显示'>
+<title>FPGA实现IIC驱动环境光、距离传感器</title>
+
+<link rel='canonical' href='https://dungeonboy.github.io/post/iic_als_ps/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='FPGA实现IIC驱动环境光、距离传感器'>
+<meta property='og:description' content='FPGA实现IIC驱动环境光、距离传感器，按键切换显示环境光、距离数据，数据通过数码管显示'>
+<meta property='og:url' content='https://dungeonboy.github.io/post/iic_als_ps/'>
+<meta property='og:site_name' content='dungeonboy&#39;s blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='IIC' /><meta property='article:published_time' content='2023-06-15T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2023-06-15T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="FPGA实现IIC驱动环境光、距离传感器">
+<meta name="twitter:description" content="FPGA实现IIC驱动环境光、距离传感器，按键切换显示环境光、距离数据，数据通过数码管显示">
+    <link rel="shortcut icon" href="/favicon_32.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hudc7465bb6ea5a0f7f1513cf1f9ee6138_15527_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">dungeonboy&#39;s blog</a></h1>
+            <h2 class="site-description">个人学习网站</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/dungeonboy/'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#系统框图">系统框图</a></li>
+    <li><a href="#环境光距离传感器驱动模块">环境光、距离传感器驱动模块</a></li>
+    <li><a href="#iic驱动模块">IIC驱动模块</a></li>
+    <li><a href="#二进制转bcd码模块">二进制转bcd码模块</a></li>
+    <li><a href="#数码管驱动模块">数码管驱动模块</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/fpga/" >
+                FPGA
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/iic_als_ps/">FPGA实现IIC驱动环境光、距离传感器</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            FPGA实现IIC驱动环境光、距离传感器，按键切换显示环境光、距离数据，数据通过数码管显示
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2023-06-15</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 7 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="简介">简介</h2>
+<p>本次实验平台为野火征途mini开发板，用到的外设有按键、LED灯数码管、环境光（ALS）+距离（PS）传感器芯片。</p>
+<p>AP3216C是一款环境光、距离传感器芯片，其接口为IIC接口，FPGA通过IIC接口可以配置工作模式、读取环境光、距离数据。</p>
+<h2 id="系统框图">系统框图</h2>
+<p>系统模块连接如下：</p>
+<p><img src="/post/iic_als_ps/system.png"
+	width="834"
+	height="491"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="169"
+		data-flex-basis="407px"
+	
+></p>
+<p><code>key_filter</code>模块实现按键消抖功能，<code>mode_reg</code>是1bit寄存器，检测到按键脉冲则翻转，mode会通过led显示，<code>ALS_PS_driver</code>模块负责通过IIC总线驱动AP3216C芯片，其内部有一个状态机和一个IIC驱动模块。</p>
+<p>当mode为0时，读取环境光的16bit的二进制数据，通过一个16bit的二进制转bcd码模块将二进制数据转化为bcd码，最后通过数码管驱动模块显示在开发板的数码管上。当mode为1时，读取、显示的则是距离数据。</p>
+<p>接下来主要介绍<code>ALS_PS_driver</code>模块，其他模块就不介绍了</p>
+<h2 id="环境光距离传感器驱动模块">环境光、距离传感器驱动模块</h2>
+<p><code>ALS_PS_driver</code>模块内部的状态机如下</p>
+<p><img src="/post/iic_als_ps/ALS_PS_driver_state_machine.png"
+	width="562"
+	height="402"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="139"
+		data-flex-basis="335px"
+	
+></p>
+<p>根据数据手册，上电200ms后，进入CONFIG状态，配置芯片工作模式为环境光+距离传感器都激活。</p>
+<p>配置好工作模式后，该传感器芯片会将模拟信号转化为数字信号，供我们用IIC接口读取，这个过程需要一定时间，根据数据手册，距离数据转化需要12.5ms，环境光数据转化需要100ms，总共需要112.5ms，每次读取间隔大于112.5ms即可，同时为了防止数据变化太快不方便观察，本次实验设定读取间隔为200ms。</p>
+<p>进入DELAY延时状态，当mode为0时，进入环境光数据读取循环，每200ms读取一次环境光数据，当mode为1时，进入距离数据读取循环，每200ms读取一次距离数据。</p>
+<p>代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="k">module</span> <span class="n">ALS_PS_driver</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>               <span class="n">clk</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>               <span class="n">rst_n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>               <span class="n">mode</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span>  <span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>  <span class="n">ALS_data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span>  <span class="p">[</span><span class="mh">9</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>   <span class="n">PS_data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// iic
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">output</span>              <span class="n">scl</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">inout</span>               <span class="n">sda</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//------------signals--------------
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 状态机信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">localparam</span> <span class="n">INIT</span>           <span class="o">=</span> <span class="mh">4&#39;h0</span><span class="p">,</span>  <span class="c1">// 上电延时200ms
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">CONFIG</span>         <span class="o">=</span> <span class="mh">4&#39;h1</span><span class="p">,</span>  <span class="c1">// 模式配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">DELAY</span>          <span class="o">=</span> <span class="mh">4&#39;h2</span><span class="p">,</span>  <span class="c1">// 数据转化等待200ms
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">IIC_READ_ALS_L</span> <span class="o">=</span> <span class="mh">4&#39;h3</span><span class="p">,</span>  <span class="c1">// 读取ALS低8位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">IIC_WAIT_1</span>     <span class="o">=</span> <span class="mh">4&#39;h4</span><span class="p">,</span>  <span class="c1">// 等待ALS低8位读取完成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">IIC_READ_ALS_H</span> <span class="o">=</span> <span class="mh">4&#39;h5</span><span class="p">,</span>  <span class="c1">// 读取ALS高8位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">IIC_READ_PS_L</span>  <span class="o">=</span> <span class="mh">4&#39;h6</span><span class="p">,</span>  <span class="c1">// 读取PS低4位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">IIC_WAIT_2</span>     <span class="o">=</span> <span class="mh">4&#39;h7</span><span class="p">,</span>  <span class="c1">// 等待PS低4位读取完成
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="n">IIC_READ_PS_H</span>  <span class="o">=</span> <span class="mh">4&#39;h8</span><span class="p">;</span>  <span class="c1">// 读取PS高6位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">reg</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>       <span class="n">state</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 200ms延时计数器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">reg</span> <span class="p">[</span><span class="mh">23</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>      <span class="n">cnt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">wire</span>            <span class="n">cnt_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">==</span> <span class="mh">24</span><span class="mi">&#39;d10</span><span class="n">_000_000</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// iic读写信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">reg</span>             <span class="n">rd_req</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">reg</span>             <span class="n">wr_req</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">reg</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>       <span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">reg</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>       <span class="n">wr_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">wire</span>            <span class="n">rd_valid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">wire</span>    <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>   <span class="n">rd_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//------------function-------------
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 200ms计数器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cnt</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">INIT</span> <span class="o">||</span> <span class="n">state</span> <span class="o">==</span> <span class="n">DELAY</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cnt</span> <span class="o">&lt;=</span> <span class="n">cnt_end</span> <span class="o">?</span> <span class="mh">24</span><span class="mi">&#39;d0</span> <span class="o">:</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">+</span> <span class="mh">24</span><span class="mi">&#39;d1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="c1">// 状态机
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">INIT</span>          <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">cnt_end</span> <span class="o">?</span> <span class="n">CONFIG</span> <span class="o">:</span> <span class="n">INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">CONFIG</span>        <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">DELAY</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">DELAY</span>         <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">cnt_end</span> <span class="o">?</span> <span class="p">(</span><span class="n">mode</span> <span class="o">?</span> <span class="n">IIC_READ_PS_L</span> <span class="o">:</span> <span class="n">IIC_READ_ALS_L</span><span class="p">)</span> <span class="o">:</span> <span class="n">DELAY</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">IIC_READ_ALS_L:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">IIC_WAIT_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">IIC_WAIT_1</span>    <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">rd_valid</span> <span class="o">?</span> <span class="n">IIC_READ_ALS_H</span> <span class="o">:</span> <span class="n">IIC_WAIT_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">IIC_READ_ALS_H:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">DELAY</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">IIC_READ_PS_L</span> <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">IIC_WAIT_2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">IIC_WAIT_2</span>    <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">rd_valid</span> <span class="o">?</span> <span class="n">IIC_READ_PS_H</span> <span class="o">:</span> <span class="n">IIC_WAIT_2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">IIC_READ_PS_H</span> <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">DELAY</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">default</span>       <span class="o">:</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">INIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// iic读写信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">CONFIG:</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">addr</span>    <span class="o">=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data</span> <span class="o">=</span> <span class="mh">8&#39;h03</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">IIC_READ_ALS_L:</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">addr</span>    <span class="o">=</span> <span class="mh">8&#39;h0c</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data</span> <span class="o">=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">IIC_READ_ALS_H:</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">addr</span>    <span class="o">=</span> <span class="mh">8&#39;h0d</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data</span> <span class="o">=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">IIC_READ_PS_L:</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">addr</span>    <span class="o">=</span> <span class="mh">8&#39;h0e</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data</span> <span class="o">=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">        <span class="nl">IIC_READ_PS_H:</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">addr</span>    <span class="o">=</span> <span class="mh">8&#39;h0f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data</span> <span class="o">=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">        <span class="k">default</span>   <span class="o">:</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_req</span>  <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">addr</span>    <span class="o">=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data</span> <span class="o">=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 读取ALS数据到寄存器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ALS_data</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="o">~</span><span class="n">mode</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="n">rd_valid</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">IIC_WAIT_1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ALS_data</span><span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rd_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span>
+</span></span><span class="line"><span class="cl">                <span class="n">ALS_data</span><span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">8</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rd_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 读取PS数据到寄存器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">PS_data</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="n">rd_valid</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">IIC_WAIT_2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">PS_data</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rd_data</span><span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">            <span class="k">else</span>
+</span></span><span class="line"><span class="cl">                <span class="n">PS_data</span><span class="p">[</span><span class="mh">9</span><span class="o">:</span><span class="mh">4</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rd_data</span><span class="p">[</span><span class="mh">5</span><span class="o">:</span><span class="mh">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// iic驱动模块
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">iic_driver</span> <span class="p">#(</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">ADDR_WIDTH</span> <span class="p">(</span><span class="mh">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">DEV_ADDR</span>   <span class="p">(</span><span class="mh">7</span><span class="mb">&#39;b0011110</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="n">inst_iic_driver</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">clk</span>        <span class="p">(</span><span class="n">clk</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">rst_n</span>      <span class="p">(</span><span class="n">rst_n</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">rd_req</span>     <span class="p">(</span><span class="n">rd_req</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">wr_req</span>     <span class="p">(</span><span class="n">wr_req</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">addr</span>       <span class="p">({</span><span class="mh">8&#39;h00</span><span class="p">,</span> <span class="n">addr</span><span class="p">}),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">wr_data</span>    <span class="p">(</span><span class="n">wr_data</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">rd_valid</span>   <span class="p">(</span><span class="n">rd_valid</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">rd_data</span>    <span class="p">(</span><span class="n">rd_data</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">scl</span>        <span class="p">(</span><span class="n">scl</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">sda</span>        <span class="p">(</span><span class="n">sda</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="iic驱动模块">IIC驱动模块</h2>
+<p>IIC驱动模块不详细介绍了。。。这里给出代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-verilog" data-lang="verilog"><span class="line"><span class="cl"><span class="c1">// -----------------------------------------------------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1">// iic驱动，支持400khz，支持地址位宽1字节、2字节，支持单字节读写
+</span></span></span><span class="line"><span class="cl"><span class="c1">// -----------------------------------------------------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">module</span> <span class="n">iic_driver</span>
+</span></span><span class="line"><span class="cl"><span class="p">#(</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 寄存器地址宽度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">parameter</span> <span class="n">ADDR_WIDTH</span> <span class="o">=</span> <span class="mh">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 野火开发板EEPROM设备地址为0x53，1010011，这里作为默认地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">parameter</span> <span class="n">DEV_ADDR</span> <span class="o">=</span> <span class="mh">7</span><span class="mb">&#39;b1010011</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>               <span class="n">clk</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>               <span class="n">rst_n</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">// host side
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">input</span>               <span class="n">rd_req</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>               <span class="n">wr_req</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>   <span class="p">[</span><span class="mh">15</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>      <span class="n">addr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">input</span>   <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>       <span class="n">wr_data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span>          <span class="n">rd_valid</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">output</span> <span class="kt">reg</span>  <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span>   <span class="n">rd_data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// iic side
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">output</span> <span class="kt">reg</span>          <span class="n">scl</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="k">inout</span>               <span class="n">sda</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//-----------------------------------信号声明-----------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 由于写法问题，SCL频率默认400k，不支持100k和1M
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">localparam</span> <span class="n">SCL_FREQ</span> <span class="o">=</span> <span class="mh">400</span><span class="n">_000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">wire</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">DEV_ADDR_W</span> <span class="o">=</span> <span class="p">{</span><span class="n">DEV_ADDR</span><span class="p">,</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">};</span><span class="c1">// 7bit设备地址 + 1bit写命令(低电平)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">wire</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">DEV_ADDR_R</span> <span class="o">=</span> <span class="p">{</span><span class="n">DEV_ADDR</span><span class="p">,</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">};</span><span class="c1">// 7bit设备地址 + 1bit读命令(高电平)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 状态机，一共16个状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="p">[</span><span class="mh">3</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">state</span><span class="p">,</span> <span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">localparam</span> <span class="n">IDLE</span>    <span class="o">=</span> <span class="mh">0</span><span class="p">,</span>        <span class="c1">// 空闲
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">START1</span>  <span class="o">=</span> <span class="mh">1</span><span class="p">,</span>        <span class="c1">// 起始位1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">DEV_W</span>   <span class="o">=</span> <span class="mh">2</span><span class="p">,</span>        <span class="c1">// 7bit设备地址 + 1bit写命令(低电平)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">ACK1</span>    <span class="o">=</span> <span class="mh">3</span><span class="p">,</span>        <span class="c1">// 设备地址应答
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">ADDR_H</span>  <span class="o">=</span> <span class="mh">4</span><span class="p">,</span>        <span class="c1">// 地址高字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">ACK2</span>    <span class="o">=</span> <span class="mh">5</span><span class="p">,</span>        <span class="c1">// 地址高字节应答
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">ADDR_L</span>  <span class="o">=</span> <span class="mh">6</span><span class="p">,</span>        <span class="c1">// 地址低字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">ACK3</span>    <span class="o">=</span> <span class="mh">7</span><span class="p">,</span>        <span class="c1">// 地址低字节应答
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">WR_DATA</span> <span class="o">=</span> <span class="mh">8</span><span class="p">,</span>        <span class="c1">// 写数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">ACK4</span>    <span class="o">=</span> <span class="mh">9</span><span class="p">,</span>        <span class="c1">// 写数据应答
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">START2</span>  <span class="o">=</span> <span class="mh">10</span><span class="p">,</span>       <span class="c1">// 起始位2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">DEV_R</span>   <span class="o">=</span> <span class="mh">11</span><span class="p">,</span>       <span class="c1">// 7bit设备地址 + 1bit读命令(高电平)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">ACK5</span>    <span class="o">=</span> <span class="mh">12</span><span class="p">,</span>       <span class="c1">// 设备地址应答
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">RD_DATA</span> <span class="o">=</span> <span class="mh">13</span><span class="p">,</span>       <span class="c1">// 读数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">NO_ACK</span>  <span class="o">=</span> <span class="mh">14</span><span class="p">,</span>       <span class="c1">// 无应答
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>               <span class="n">STOP</span>    <span class="o">=</span> <span class="mh">15</span><span class="p">;</span>       <span class="c1">// 停止位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 读写状态寄存，0为写，1为读
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="n">is_read</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// wr_data寄存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">wr_data_r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// addr寄存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">addr_h</span><span class="p">,</span> <span class="n">addr_l</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 读数据寄存器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="p">[</span><span class="mh">7</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">rd_data_r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 应答信号寄存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="n">ack_r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// scl计数器，400khz则为125时钟周期，但125不能被4整除，所以选择128，产生的scl频率约为390khz
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">scl_cnt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// bit计数器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="p">[</span><span class="mh">2</span><span class="o">:</span><span class="mh">0</span><span class="p">]</span> <span class="n">bit_cnt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 内部sda
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">reg</span> <span class="n">sda_r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// sda三态门输出使能
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">wire</span> <span class="n">sda_oe</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// sda三态门
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">assign</span> <span class="n">sda</span> <span class="o">=</span> <span class="n">sda_oe</span> <span class="o">?</span> <span class="n">sda_r</span> <span class="o">:</span> <span class="mh">1</span><span class="p">&#39;</span><span class="n">bz</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// scl计数器满，127，即7&#39;b1111111
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">wire</span> <span class="n">scl_cnt_end</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">scl_cnt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1字节结束，当scl_cnt == 7&#39;b1111111 且 bit_cnt == 3&#39;b111时，表示1byte结束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">wire</span> <span class="n">byte_end</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">bit_cnt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//---------------------------------输入信号寄存---------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 地址寄存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span><span class="n">addr_h</span><span class="p">,</span> <span class="n">addr_l</span><span class="p">}</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">IDLE</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">rd_req</span> <span class="o">|</span> <span class="n">wr_req</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span><span class="n">addr_h</span><span class="p">,</span> <span class="n">addr_l</span><span class="p">}</span> <span class="o">&lt;=</span> <span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 写数据寄存
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data_r</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">IDLE</span> <span class="o">&amp;</span> <span class="n">wr_req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">wr_data_r</span> <span class="o">&lt;=</span> <span class="n">wr_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//-----------------------------------------------------------------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 读状态寄存，读优先，不在读状态即为写状态
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">is_read</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">IDLE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">is_read</span> <span class="o">&lt;=</span> <span class="n">rd_req</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 状态机
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">IDLE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">            <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">IDLE</span>   <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="p">(</span><span class="n">rd_req</span> <span class="o">|</span> <span class="n">wr_req</span><span class="p">)</span> <span class="o">?</span> <span class="n">START1</span> <span class="o">:</span> <span class="n">IDLE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">START1</span> <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="n">DEV_W</span> <span class="o">:</span> <span class="n">START1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">DEV_W</span>  <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">byte_end</span> <span class="o">?</span> <span class="n">ACK1</span> <span class="o">:</span> <span class="n">DEV_W</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ACK1</span>   <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="p">(</span><span class="o">~</span><span class="n">ack_r</span> <span class="o">?</span> <span class="p">(</span><span class="n">ADDR_WIDTH</span> <span class="o">==</span> <span class="mh">2</span> <span class="o">?</span> <span class="n">ADDR_H</span> <span class="o">:</span> <span class="n">ADDR_L</span><span class="p">)</span> <span class="o">:</span> <span class="n">IDLE</span><span class="p">)</span> <span class="o">:</span> <span class="n">ACK1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ADDR_H</span> <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">byte_end</span> <span class="o">?</span> <span class="n">ACK2</span> <span class="o">:</span> <span class="n">ADDR_H</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ACK2</span>   <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="p">(</span><span class="o">~</span><span class="n">ack_r</span> <span class="o">?</span> <span class="n">ADDR_L</span> <span class="o">:</span> <span class="n">IDLE</span><span class="p">)</span> <span class="o">:</span> <span class="n">ACK2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ADDR_L</span> <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">byte_end</span> <span class="o">?</span> <span class="n">ACK3</span> <span class="o">:</span> <span class="n">ADDR_L</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ACK3</span>   <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="p">(</span><span class="o">~</span><span class="n">ack_r</span> <span class="o">?</span> <span class="p">(</span><span class="n">is_read</span> <span class="o">?</span> <span class="n">START2</span> <span class="o">:</span> <span class="n">WR_DATA</span><span class="p">)</span> <span class="o">:</span> <span class="n">IDLE</span><span class="p">)</span> <span class="o">:</span> <span class="n">ACK3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">WR_DATA:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">byte_end</span> <span class="o">?</span> <span class="n">ACK4</span> <span class="o">:</span> <span class="n">WR_DATA</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ACK4</span>   <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="p">(</span><span class="o">~</span><span class="n">ack_r</span> <span class="o">?</span> <span class="n">STOP</span> <span class="o">:</span> <span class="n">IDLE</span><span class="p">)</span> <span class="o">:</span> <span class="n">ACK4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">START2</span> <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="n">DEV_R</span> <span class="o">:</span> <span class="n">START2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">DEV_R</span>  <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">byte_end</span> <span class="o">?</span> <span class="n">ACK5</span> <span class="o">:</span> <span class="n">DEV_R</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ACK5</span>   <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="p">(</span><span class="o">~</span><span class="n">ack_r</span> <span class="o">?</span> <span class="n">RD_DATA</span> <span class="o">:</span> <span class="n">IDLE</span><span class="p">)</span> <span class="o">:</span> <span class="n">ACK5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">RD_DATA:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">byte_end</span> <span class="o">?</span> <span class="n">NO_ACK</span> <span class="o">:</span> <span class="n">RD_DATA</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">NO_ACK</span> <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="n">STOP</span> <span class="o">:</span> <span class="n">NO_ACK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">STOP</span>   <span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">scl_cnt_end</span> <span class="o">?</span> <span class="n">IDLE</span> <span class="o">:</span> <span class="n">STOP</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">default</span><span class="o">:</span> <span class="n">next</span> <span class="o">=</span> <span class="n">IDLE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// scl计数器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">scl_cnt</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">!=</span> <span class="n">IDLE</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">scl_cnt</span> <span class="o">&lt;=</span> <span class="n">scl_cnt</span> <span class="o">+</span> <span class="mh">7</span><span class="mi">&#39;d1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// bit计数器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">bit_cnt</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">DEV_W</span> <span class="o">||</span> <span class="n">state</span> <span class="o">==</span> <span class="n">ADDR_H</span> <span class="o">||</span> <span class="n">state</span> <span class="o">==</span> <span class="n">ADDR_L</span> <span class="o">||</span> <span class="n">state</span> <span class="o">==</span> <span class="n">WR_DATA</span> <span class="o">||</span> <span class="n">state</span> <span class="o">==</span> <span class="n">DEV_R</span> <span class="o">||</span> <span class="n">state</span> <span class="o">==</span> <span class="n">RD_DATA</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="n">scl_cnt_end</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">bit_cnt</span> <span class="o">&lt;=</span> <span class="n">bit_cnt</span> <span class="o">+</span> <span class="mh">3</span><span class="mi">&#39;d1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// scl 每个周期持续128系统时钟周期，scl_cnt[6:5]变化规律为00-01-10-11，所以可以用于调整scl电平，保证sda在scl低电平中间进行跳转
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">IDLE</span>   <span class="o">:</span> <span class="n">scl</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 与非 1110
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// ___
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">//    |_
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">START1</span> <span class="o">:</span> <span class="n">scl</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">scl_cnt</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">scl_cnt</span><span class="p">[</span><span class="mh">5</span><span class="p">]);</span>      
+</span></span><span class="line"><span class="cl">            <span class="c1">// 或 0111
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">//   ___
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// _|
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">STOP</span>   <span class="o">:</span> <span class="n">scl</span> <span class="o">=</span> <span class="n">scl_cnt</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">|</span> <span class="n">scl_cnt</span><span class="p">[</span><span class="mh">5</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 异或 0110
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">//   __
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// _|  |_
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">default</span><span class="o">:</span> <span class="n">scl</span> <span class="o">=</span> <span class="n">scl_cnt</span><span class="p">[</span><span class="mh">6</span><span class="p">]</span> <span class="o">^</span> <span class="n">scl_cnt</span><span class="p">[</span><span class="mh">5</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// sda_oe 在应答状态和读数据状态，允许sda输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">assign</span> <span class="n">sda_oe</span> <span class="o">=</span> <span class="o">~</span><span class="p">((</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK1</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK2</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK3</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK4</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK5</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">RD_DATA</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// sda_r
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="o">*</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">START1</span><span class="p">,</span> <span class="nl">START2:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="o">~</span><span class="n">scl_cnt</span><span class="p">[</span><span class="mh">6</span><span class="p">];</span>            <span class="c1">// 下降沿
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">DEV_W</span>         <span class="o">:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="n">DEV_ADDR_W</span><span class="p">[</span><span class="o">~</span><span class="n">bit_cnt</span><span class="p">];</span>   <span class="c1">// 7bit设备地址 + 1bit写命令
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">ADDR_H</span>        <span class="o">:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="n">addr_h</span><span class="p">[</span><span class="o">~</span><span class="n">bit_cnt</span><span class="p">];</span>       <span class="c1">// 地址高字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">ADDR_L</span>        <span class="o">:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="n">addr_l</span><span class="p">[</span><span class="o">~</span><span class="n">bit_cnt</span><span class="p">];</span>       <span class="c1">// 地址低字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">WR_DATA</span>       <span class="o">:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="n">wr_data_r</span><span class="p">[</span><span class="o">~</span><span class="n">bit_cnt</span><span class="p">];</span>    <span class="c1">// 写数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">DEV_R</span>         <span class="o">:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="n">DEV_ADDR_R</span><span class="p">[</span><span class="o">~</span><span class="n">bit_cnt</span><span class="p">];</span>   <span class="c1">// 7bit设备地址 + 1bit读命令
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">STOP</span>          <span class="o">:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="n">scl_cnt</span><span class="p">[</span><span class="mh">6</span><span class="p">];</span>             <span class="c1">// 上升沿
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">default</span>       <span class="o">:</span> <span class="n">sda_r</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">endcase</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 采样应答信号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ack_r</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span><span class="p">((</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK1</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK2</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK3</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK4</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">ACK5</span><span class="p">))</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="n">scl_cnt</span> <span class="o">==</span> <span class="mh">7</span><span class="mb">&#39;b0111111</span><span class="p">)</span>  <span class="c1">// 在scl高电平中间进行采样
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">ack_r</span> <span class="o">&lt;=</span> <span class="n">sda</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span> <span class="k">else</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ack_r</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 读数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_data_r</span> <span class="o">&lt;=</span> <span class="mh">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">RD_DATA</span> <span class="o">&amp;&amp;</span> <span class="n">scl_cnt</span> <span class="o">==</span> <span class="mh">7</span><span class="mb">&#39;b0111111</span><span class="p">)</span><span class="c1">// 在scl高电平中间进行采样
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">rd_data_r</span> <span class="o">&lt;=</span> <span class="p">{</span><span class="n">rd_data_r</span><span class="p">[</span><span class="mh">6</span><span class="o">:</span><span class="mh">0</span><span class="p">],</span> <span class="n">sda</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 输出读数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">always</span> <span class="p">@(</span><span class="k">posedge</span> <span class="n">clk</span><span class="p">,</span> <span class="k">negedge</span> <span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rst_n</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_valid</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_data</span>  <span class="o">&lt;=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">is_read</span> <span class="o">&amp;&amp;</span> <span class="n">state</span> <span class="o">==</span> <span class="n">STOP</span> <span class="o">&amp;&amp;</span> <span class="n">scl_cnt_end</span><span class="p">)</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_valid</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_data</span>  <span class="o">&lt;=</span> <span class="n">rd_data_r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span> <span class="k">else</span> <span class="k">begin</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_valid</span> <span class="o">&lt;=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">rd_data</span>  <span class="o">&lt;=</span> <span class="mh">8&#39;h00</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">end</span>
+</span></span><span class="line"><span class="cl">    <span class="k">end</span>
+</span></span><span class="line"><span class="cl"><span class="k">endmodule</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="二进制转bcd码模块">二进制转bcd码模块</h2>
+<p><a class="link" href="https://blog.csdn.net/lzl1342848782/article/details/130501029?spm=1001.2014.3001.5501"  target="_blank" rel="noopener"
+    >verilog实现加3移位法-二进制转BCD码</a></p>
+<h2 id="数码管驱动模块">数码管驱动模块</h2>
+<p><a class="link" href="https://blog.csdn.net/lzl1342848782/article/details/126527561?spm=1001.2014.3001.5501"  target="_blank" rel="noopener"
+    >FPGA驱动74HC595实现数码管动态显示</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/iic/">IIC</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2021 - 
+        
+        2023 dungeonboy&#39;s blog
+    </section>
+    
+    <section class="powerby">
+        
+            个人学习网站 <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>计算机组成原理 on dungeonboy&#39;s blog</title>
+        <link>https://dungeonboy.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/</link>
+        <description>Recent content in 计算机组成原理 on dungeonboy&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <lastBuildDate>Thu, 25 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://dungeonboy.github.io/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>IEEE754浮点数标准</title>
+        <link>https://dungeonboy.github.io/post/ieee754/</link>
+        <pubDate>Thu, 25 May 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://dungeonboy.github.io/post/ieee754/</guid>
+        <description>&lt;h2 id=&#34;什么是ieee754标准&#34;&gt;什么是IEEE754标准&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1985年, IEEE754标准问世&lt;/strong&gt;，提供了&lt;strong&gt;以二进制的方式存储十进制浮点数&lt;/strong&gt;的具体标准。&lt;/p&gt;
+&lt;p&gt;IEEE754提供了四种精度规范, 其中最常用的是&lt;strong&gt;单精度浮点型&lt;/strong&gt; 和&lt;strong&gt;双精度浮点型&lt;/strong&gt; , IEEE754并没有规定&lt;strong&gt;float&lt;/strong&gt;和&lt;strong&gt;double&lt;/strong&gt;表示单精度浮点型和双精度浮点型，但一般提到float、double指的就是单精度、双精度型。&lt;/p&gt;
+&lt;h2 id=&#34;浮点数的存储方式&#34;&gt;浮点数的存储方式&lt;/h2&gt;
+&lt;h3 id=&#34;32位单精度浮点数&#34;&gt;32位单精度浮点数&lt;/h3&gt;
+&lt;p&gt;32位浮点数（也叫单精度浮点数、float类型）被划分为三部分：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dungeonboy.github.io/post/ieee754/32bit_float.png&#34;
+	width=&#34;674&#34;
+	height=&#34;116&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;581&#34;
+		data-flex-basis=&#34;1394px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;sign&lt;/strong&gt;: 1bit符号位，0表示正数，1表示负数&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;exponent&lt;/strong&gt;: 8bit偏移后的指数位，用于表示以2为底的指数，范围为&lt;code&gt;[-127, 128]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;为了表示方便，指数位有一个固定的偏移量(&lt;strong&gt;bias&lt;/strong&gt;)，用于使&lt;strong&gt;指数+偏移量=非负数&lt;/strong&gt;，在32位浮点数中，偏移量为&lt;code&gt;127&lt;/code&gt;，在64位浮点数中，偏移量为&lt;code&gt;1023&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;例&lt;/strong&gt;：如果指数为&lt;code&gt;-127&lt;/code&gt;，则该8bit为&lt;code&gt;-127+127=0&lt;/code&gt;；如果指数为&lt;code&gt;-10&lt;/code&gt;，则该8bit为&lt;code&gt;-10+127=117&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;个人理解&lt;/strong&gt;：8bit二进制数表示范围为&lt;code&gt;[0, 255]&lt;/code&gt;，既不想要符号位又想表示负数，所以此处有偏移量概念，即将&lt;code&gt;[0, 255]&lt;/code&gt;的表示范围转换为&lt;code&gt;[-127, 128]&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;fraction&lt;/strong&gt;: 23bit尾数位&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;以二进制存储十进制浮点数时，首先要把十进制转换为二进制&lt;/li&gt;
+&lt;li&gt;以&lt;code&gt;20.5&lt;/code&gt;为例，二进制为&lt;code&gt;10100.1&lt;/code&gt;，将该数转换为二进制指数形式：&lt;code&gt;1.01001 * 2^4&lt;/code&gt;，小数点放在左边第一位和第二位中间，且第一位不能为0，这个过程叫规范化(&lt;strong&gt;normalized&lt;/strong&gt;)，则&lt;code&gt;1.01001&lt;/code&gt;为尾数，4为偏移前的指数(&lt;strong&gt;unbiased exponent&lt;/strong&gt;)，偏移后的指数(&lt;strong&gt;biased exponent&lt;/strong&gt;)为&lt;code&gt;4+127=131&lt;/code&gt;，131的二进制为&lt;code&gt;10000011&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐藏高位1&lt;/strong&gt;：由于经过规范化后，小数点前必定为1，所以在存储尾数时，可以省略小数点前的1，节约1bit空间，此处只需记录剩余尾数部分&lt;code&gt;01001&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;低位补零&lt;/strong&gt;：在隐藏高位后，尾数为&lt;code&gt;01001&lt;/code&gt;，只有5bit，其余低位补零即可，则&lt;code&gt;20.5&lt;/code&gt;最终的32位浮点数表示为：&lt;code&gt;0100 0001 1010 0100 0000 0000 0000 0000&lt;/code&gt;或&lt;code&gt;0x41A40000&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;已知浮点数表示，求其十进制数，计算方法如图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dungeonboy.github.io/post/ieee754/fomular.png&#34;
+	width=&#34;726&#34;
+	height=&#34;224&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;324&#34;
+		data-flex-basis=&#34;777px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;64位双精度浮点数&#34;&gt;64位双精度浮点数&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://dungeonboy.github.io/post/ieee754/64bit_double.png&#34;
+	width=&#34;762&#34;
+	height=&#34;164&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;464&#34;
+		data-flex-basis=&#34;1115px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;原理同上&lt;/p&gt;
+&lt;h2 id=&#34;浮点数的取指范围&#34;&gt;浮点数的取指范围&lt;/h2&gt;
+&lt;h3 id=&#34;维基百科给出的取值范围&#34;&gt;维基百科给出的取值范围&lt;/h3&gt;
+&lt;p&gt;下图是维基百科给出的32位和64位浮点数的&lt;strong&gt;十进制&lt;/strong&gt;取指范围：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dungeonboy.github.io/post/ieee754/wiki_float_range.png&#34;
+	width=&#34;877&#34;
+	height=&#34;129&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;679&#34;
+		data-flex-basis=&#34;1631px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;32位浮点数的十进制有效数字大约为&lt;strong&gt;7位&lt;/strong&gt;，64位的有效数字大约为&lt;strong&gt;16位&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;前置概念&#34;&gt;前置概念&lt;/h3&gt;
+&lt;h4 id=&#34;normal-numbersubnormal-number&#34;&gt;normal number、subnormal number&lt;/h4&gt;
+&lt;p&gt;IEEE754规定，尾数的隐藏位为1则为&lt;strong&gt;normal number（规格数）&lt;/strong&gt;，为0则为&lt;strong&gt;subnormal number（非规格数）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一般来说，尾数隐藏位为1的数为规格数，即正常的数&lt;/p&gt;
+&lt;p&gt;当&lt;strong&gt;指数位全0&lt;/strong&gt;时，表示该数为非规格数，即尾数隐藏位为0&lt;/p&gt;
+&lt;h4 id=&#34;non-number&#34;&gt;non-number&lt;/h4&gt;
+&lt;p&gt;IEEE754规定&lt;strong&gt;指数位全1&lt;/strong&gt;的数为&lt;strong&gt;non-number（特殊数）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;指数位全1时，指数为&lt;strong&gt;128&lt;/strong&gt;，即该数为&lt;strong&gt;infinity(无穷)&lt;/strong&gt;，或&lt;strong&gt;NaN(Not a Number)&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;计算方法&#34;&gt;计算方法&lt;/h3&gt;
+&lt;p&gt;根据上述概念，讨论浮点数取值范围时，讨论的是&lt;strong&gt;normal number取值范围&lt;/strong&gt;，即不包括指数位全0和全1的特殊情况&lt;/p&gt;
+&lt;p&gt;此时的指数位取值范围为&lt;code&gt;[1, 254]&lt;/code&gt;，代表的指数范围为&lt;code&gt;[-126, 127]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;尾数隐藏位始终为1，所以尾数表示范围为&lt;code&gt;[1.000...000, 1.111...111]&lt;/code&gt;，即十进制的&lt;code&gt;[1, 2)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;则32位浮点数的取值范围为：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dungeonboy.github.io/post/ieee754/float_range.jpg&#34;
+	width=&#34;430&#34;
+	height=&#34;37&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;1162&#34;
+		data-flex-basis=&#34;2789px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意开闭区间&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;将上式的以2为底换成以10为底，省略掉多余的小数，就得到上方维基百科给出的取值范围&lt;/p&gt;
+&lt;h3 id=&#34;补充&#34;&gt;补充&lt;/h3&gt;
+&lt;p&gt;下图表示32位单精度浮点数取指范围示意图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dungeonboy.github.io/post/ieee754/2d_float_range.png&#34;
+	width=&#34;1080&#34;
+	height=&#34;348&#34;
+	
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;310&#34;
+		data-flex-basis=&#34;744px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;可以看到，&lt;strong&gt;normal number&lt;/strong&gt;的取值范围&lt;strong&gt;不包括0&lt;/strong&gt;以及周围小范围的数&lt;/p&gt;
+&lt;h2 id=&#34;后续&#34;&gt;后续&lt;/h2&gt;
+&lt;p&gt;有待补充~&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

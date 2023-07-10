@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='学习IEEE754浮点数存储方式、取值范围、精度等内容'>
+<title>IEEE754浮点数标准</title>
+
+<link rel='canonical' href='https://dungeonboy.github.io/post/ieee754/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='IEEE754浮点数标准'>
+<meta property='og:description' content='学习IEEE754浮点数存储方式、取值范围、精度等内容'>
+<meta property='og:url' content='https://dungeonboy.github.io/post/ieee754/'>
+<meta property='og:site_name' content='dungeonboy&#39;s blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='浮点数' /><meta property='article:published_time' content='2023-05-25T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2023-05-26T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="IEEE754浮点数标准">
+<meta name="twitter:description" content="学习IEEE754浮点数存储方式、取值范围、精度等内容">
+    <link rel="shortcut icon" href="/favicon_32.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hudc7465bb6ea5a0f7f1513cf1f9ee6138_15527_300x0_resize_box_3.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">dungeonboy&#39;s blog</a></h1>
+            <h2 class="site-description">个人学习网站</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/dungeonboy/'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>暗色模式</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#什么是ieee754标准">什么是IEEE754标准</a></li>
+    <li><a href="#浮点数的存储方式">浮点数的存储方式</a>
+      <ol>
+        <li><a href="#32位单精度浮点数">32位单精度浮点数</a></li>
+        <li><a href="#64位双精度浮点数">64位双精度浮点数</a></li>
+      </ol>
+    </li>
+    <li><a href="#浮点数的取指范围">浮点数的取指范围</a>
+      <ol>
+        <li><a href="#维基百科给出的取值范围">维基百科给出的取值范围</a></li>
+        <li><a href="#前置概念">前置概念</a>
+          <ol>
+            <li><a href="#normal-numbersubnormal-number">normal number、subnormal number</a></li>
+            <li><a href="#non-number">non-number</a></li>
+          </ol>
+        </li>
+        <li><a href="#计算方法">计算方法</a></li>
+        <li><a href="#补充">补充</a></li>
+      </ol>
+    </li>
+    <li><a href="#后续">后续</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" >
+                计算机组成原理
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/ieee754/">IEEE754浮点数标准</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            学习IEEE754浮点数存储方式、取值范围、精度等内容
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2023-05-25</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="什么是ieee754标准">什么是IEEE754标准</h2>
+<p><strong>1985年, IEEE754标准问世</strong>，提供了<strong>以二进制的方式存储十进制浮点数</strong>的具体标准。</p>
+<p>IEEE754提供了四种精度规范, 其中最常用的是<strong>单精度浮点型</strong> 和<strong>双精度浮点型</strong> , IEEE754并没有规定<strong>float</strong>和<strong>double</strong>表示单精度浮点型和双精度浮点型，但一般提到float、double指的就是单精度、双精度型。</p>
+<h2 id="浮点数的存储方式">浮点数的存储方式</h2>
+<h3 id="32位单精度浮点数">32位单精度浮点数</h3>
+<p>32位浮点数（也叫单精度浮点数、float类型）被划分为三部分：</p>
+<p><img src="/post/ieee754/32bit_float.png"
+	width="674"
+	height="116"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="581"
+		data-flex-basis="1394px"
+	
+></p>
+<ul>
+<li>
+<p><strong>sign</strong>: 1bit符号位，0表示正数，1表示负数</p>
+</li>
+<li>
+<p><strong>exponent</strong>: 8bit偏移后的指数位，用于表示以2为底的指数，范围为<code>[-127, 128]</code></p>
+<p>为了表示方便，指数位有一个固定的偏移量(<strong>bias</strong>)，用于使<strong>指数+偏移量=非负数</strong>，在32位浮点数中，偏移量为<code>127</code>，在64位浮点数中，偏移量为<code>1023</code></p>
+<p><strong>例</strong>：如果指数为<code>-127</code>，则该8bit为<code>-127+127=0</code>；如果指数为<code>-10</code>，则该8bit为<code>-10+127=117</code></p>
+<p><strong>个人理解</strong>：8bit二进制数表示范围为<code>[0, 255]</code>，既不想要符号位又想表示负数，所以此处有偏移量概念，即将<code>[0, 255]</code>的表示范围转换为<code>[-127, 128]</code></p>
+</li>
+<li>
+<p><strong>fraction</strong>: 23bit尾数位</p>
+<ul>
+<li>以二进制存储十进制浮点数时，首先要把十进制转换为二进制</li>
+<li>以<code>20.5</code>为例，二进制为<code>10100.1</code>，将该数转换为二进制指数形式：<code>1.01001 * 2^4</code>，小数点放在左边第一位和第二位中间，且第一位不能为0，这个过程叫规范化(<strong>normalized</strong>)，则<code>1.01001</code>为尾数，4为偏移前的指数(<strong>unbiased exponent</strong>)，偏移后的指数(<strong>biased exponent</strong>)为<code>4+127=131</code>，131的二进制为<code>10000011</code></li>
+<li><strong>隐藏高位1</strong>：由于经过规范化后，小数点前必定为1，所以在存储尾数时，可以省略小数点前的1，节约1bit空间，此处只需记录剩余尾数部分<code>01001</code></li>
+<li><strong>低位补零</strong>：在隐藏高位后，尾数为<code>01001</code>，只有5bit，其余低位补零即可，则<code>20.5</code>最终的32位浮点数表示为：<code>0100 0001 1010 0100 0000 0000 0000 0000</code>或<code>0x41A40000</code></li>
+</ul>
+</li>
+</ul>
+<p>已知浮点数表示，求其十进制数，计算方法如图：</p>
+<p><img src="/post/ieee754/fomular.png"
+	width="726"
+	height="224"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="324"
+		data-flex-basis="777px"
+	
+></p>
+<h3 id="64位双精度浮点数">64位双精度浮点数</h3>
+<p><img src="/post/ieee754/64bit_double.png"
+	width="762"
+	height="164"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="464"
+		data-flex-basis="1115px"
+	
+></p>
+<p>原理同上</p>
+<h2 id="浮点数的取指范围">浮点数的取指范围</h2>
+<h3 id="维基百科给出的取值范围">维基百科给出的取值范围</h3>
+<p>下图是维基百科给出的32位和64位浮点数的<strong>十进制</strong>取指范围：</p>
+<p><img src="/post/ieee754/wiki_float_range.png"
+	width="877"
+	height="129"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="679"
+		data-flex-basis="1631px"
+	
+></p>
+<p>32位浮点数的十进制有效数字大约为<strong>7位</strong>，64位的有效数字大约为<strong>16位</strong></p>
+<h3 id="前置概念">前置概念</h3>
+<h4 id="normal-numbersubnormal-number">normal number、subnormal number</h4>
+<p>IEEE754规定，尾数的隐藏位为1则为<strong>normal number（规格数）</strong>，为0则为<strong>subnormal number（非规格数）</strong></p>
+<p>一般来说，尾数隐藏位为1的数为规格数，即正常的数</p>
+<p>当<strong>指数位全0</strong>时，表示该数为非规格数，即尾数隐藏位为0</p>
+<h4 id="non-number">non-number</h4>
+<p>IEEE754规定<strong>指数位全1</strong>的数为<strong>non-number（特殊数）</strong></p>
+<p>指数位全1时，指数为<strong>128</strong>，即该数为<strong>infinity(无穷)</strong>，或<strong>NaN(Not a Number)</strong></p>
+<h3 id="计算方法">计算方法</h3>
+<p>根据上述概念，讨论浮点数取值范围时，讨论的是<strong>normal number取值范围</strong>，即不包括指数位全0和全1的特殊情况</p>
+<p>此时的指数位取值范围为<code>[1, 254]</code>，代表的指数范围为<code>[-126, 127]</code></p>
+<p>尾数隐藏位始终为1，所以尾数表示范围为<code>[1.000...000, 1.111...111]</code>，即十进制的<code>[1, 2)</code></p>
+<p>则32位浮点数的取值范围为：</p>
+<p><img src="/post/ieee754/float_range.jpg"
+	width="430"
+	height="37"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="1162"
+		data-flex-basis="2789px"
+	
+></p>
+<p><strong>注意开闭区间</strong></p>
+<p>将上式的以2为底换成以10为底，省略掉多余的小数，就得到上方维基百科给出的取值范围</p>
+<h3 id="补充">补充</h3>
+<p>下图表示32位单精度浮点数取指范围示意图：</p>
+<p><img src="/post/ieee754/2d_float_range.png"
+	width="1080"
+	height="348"
+	
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="310"
+		data-flex-basis="744px"
+	
+></p>
+<p>可以看到，<strong>normal number</strong>的取值范围<strong>不包括0</strong>以及周围小范围的数</p>
+<h2 id="后续">后续</h2>
+<p>有待补充~</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/%E6%B5%AE%E7%82%B9%E6%95%B0/">浮点数</a>
+        
+    </section>
+
+
+    <section class="article-lastmod">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <span>
+            最后更新于 2023-05-26
+        </span>
+    </section></footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2021 - 
+        
+        2023 dungeonboy&#39;s blog
+    </section>
+    
+    <section class="powerby">
+        
+            个人学习网站 <br/>
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
